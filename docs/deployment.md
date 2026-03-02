@@ -2,6 +2,14 @@
 
 This guide walks you through deploying an LLM-powered chatbot on Kubernetes, using NGINX Gateway Fabric (NGF) as the central proxy at every layer. You will build the stack incrementally - each step adds a new application component and the corresponding NGF routing configuration - so you can observe NGF's capabilities grow from a simple reverse proxy to a full inference gateway.
 
+The full request path is as follows:
+
+![End to end flow](./images/end-to-end-path.excalidraw.png)
+
+Each layer is independently handled by NGF - a single NGINX Gateway Fabric instance acting as reverse proxy, API gateway, and inference gateway simultaneously.
+
+---
+
 **Prerequisites:**
 
 - A Kubernetes cluster with NGINX Gateway Fabric installed with inference extension support
@@ -118,7 +126,7 @@ The EPP is a gRPC extension to NGF that implements model-aware load balancing. I
 kubectl -n vllm apply -f inference-simulator/endpoint-picker/
 ```
 
-This creates the relevant objects for the EPP, exposing a gRPC endpoint on port 9002 which NGF calls to resolve the best backend pod for each inference request.
+This creates the relevant objects for the EPP, exposing a gRPC endpoint on port 9002 which NGF calls to resolve the best LLM pod for each inference request.
 
 **Verify:**
 
@@ -167,8 +175,10 @@ Set the `API URL` field with value `http://backend.ngf-agentic-reference-stack.e
 
 ![End to End](./images/end-to-end.png)
 
-The full request path is:
+Observe NGF logs to reveal NGF consulting EPP on each request to select an LLM pod:
 
-![End to end flow](./images/end-to-end-path.excalidraw.png)
-
-Each layer is independently handled by NGF - a single NGINX Gateway Fabric instance acting as reverse proxy, API gateway, and inference gateway simultaneously.
+```bash
+kubectl -n nginx-gateway logs deployment/inference-gateway-nginx -c nginx -f
+# endpoint-picker-shim {"level":"info","ts":"<timestamp>","logger":"endpoint-picker-shim","msg":"Found endpoint","endpoint":"10.42.0.23:8000"}
+# nginx <timestamp> [info] 1770#1770: *1363 js: found inference endpoint from EndpointPicker: 10.42.0.23:8000
+```
