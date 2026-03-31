@@ -64,5 +64,5 @@ k3d kubeconfig write "${CLUSTER_NAME}" > /dev/null
 echo -e "\n${GREEN}Cluster '${CLUSTER_NAME}' created successfully!${NC}"
 echo -e "\n${YELLOW}Next steps:${NC}"
 echo "1. Use the cluster: kubectl --context k3d-${CLUSTER_NAME} get nodes"
-echo "2. Install NGINX Gateway Fabric: sudo ./scripts/ngf-setup.sh"
-echo "3. Install with Inference Extension: sudo ./scripts/install-ngf-inference.sh"
+echo "2. Install NGINX Gateway Fabric: ./scripts/ngf-setup.sh"
+echo "3. Install with Inference Extension: ./scripts/install-ngf-inference.sh"
