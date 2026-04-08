@@ -17,7 +17,7 @@ NAMESPACE="keycloak"
 OPERATOR_VERSION="26.1.0"
 ADMIN_USER="admin"
 ADMIN_PASSWORD="admin"
-NODE_PORT=8081
+LB_PORT=8081
 
 OPERATOR_BASE="https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources/${OPERATOR_VERSION}/kubernetes"
 
@@ -95,21 +95,20 @@ spec:
         key: password
 EOF
 
-echo -e "\n${GREEN}Step 7: Exposing Keycloak on port ${NODE_PORT} via NodePort${NC}"
+echo -e "\n${GREEN}Step 7: Exposing Keycloak on port ${LB_PORT} via LoadBalancer${NC}"
 kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Service
 metadata:
-  name: keycloak-nodeport
+  name: keycloak-loadbalancer
   namespace: ${NAMESPACE}
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app: keycloak
   ports:
-    - port: 8080
+    - port: ${LB_PORT}
       targetPort: 8080
-      nodePort: ${NODE_PORT}
 EOF
 
 echo -e "\n${GREEN}Step 8: Waiting for Keycloak to be ready${NC}"
@@ -118,8 +117,8 @@ kubectl wait --for=condition=Ready --timeout=300s keycloak/keycloak -n "${NAMESP
 echo -e "\n${GREEN}Installation complete!${NC}"
 echo -e "\n${GREEN}Pods in ${NAMESPACE} namespace:${NC}"
 kubectl get pods -n "${NAMESPACE}"
-echo -e "\n${YELLOW}Keycloak is accessible at: http://localhost:${NODE_PORT}${NC}"
-echo -e "${YELLOW}Admin console:            http://localhost:${NODE_PORT}/admin${NC}"
+echo -e "\n${YELLOW}Keycloak is accessible at: http://localhost:${LB_PORT}${NC}"
+echo -e "${YELLOW}Admin console:            http://localhost:${LB_PORT}/admin${NC}"
 echo -e "${YELLOW}Admin user:               ${ADMIN_USER}${NC}"
 echo -e "\n${YELLOW}Available CRDs:${NC}"
 kubectl get crd | grep keycloak
