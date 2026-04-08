@@ -31,9 +31,9 @@ spec:
               # Required so Keycloak constructs correct redirect URIs when
               # proxy-headers=xforwarded is set on the Keycloak CR.
               - name: X-Forwarded-Proto
-                value: http
+                value: https
               - name: X-Forwarded-Port
-                value: "8082"
+                value: "443"
       backendRefs:
         - name: keycloak-service
           port: 8080
