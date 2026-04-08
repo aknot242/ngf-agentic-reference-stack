@@ -42,7 +42,7 @@ echo -e "${GREEN}✓ k3d $(k3d version | head -1)${NC}"
 
 # Create cluster
 echo -e "\n${GREEN}Creating k3d cluster '${CLUSTER_NAME}'${NC}"
-echo -e "${YELLOW}Port mappings: 8080, 8000, 8081${NC}"
+echo -e "${YELLOW}Port mappings: 8080, 8000, 8082${NC}"
 if [ -n "${TLS_SAN}" ]; then
     echo -e "${YELLOW}TLS SAN: ${TLS_SAN}${NC}"
 fi
@@ -55,7 +55,7 @@ fi
 k3d cluster create "${CLUSTER_NAME}" \
     -p "8080:8080@loadbalancer" \
     -p "8000:8000@loadbalancer" \
-    -p "8081:8081@loadbalancer" \
+    -p "8082:8082@loadbalancer" \
     --k3s-arg "--disable=traefik@server:0" \
     "${TLS_SAN_ARG[@]}"
 
