@@ -101,7 +101,6 @@ kubectl wait --for=condition=Ready --timeout=300s keycloak/keycloak -n "${NAMESP
 
 echo -e "\n${GREEN}Step 9: Applying Keycloak Gateway and HTTPRoute${NC}"
 kubectl -n nginx-gateway apply -f keycloak/gateway.yaml
-kubectl apply -f keycloak/snippets-filter.yaml
 kubectl apply -f keycloak/httproute.yaml
 
 echo -e "\n${GREEN}Installation complete!${NC}"
