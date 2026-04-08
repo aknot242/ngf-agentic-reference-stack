@@ -7,7 +7,6 @@ spec:
   parentRefs:
     - namespace: nginx-gateway
       name: keycloak-gateway
-      sectionName: keycloak
   rules:
     # Expose paths recommended by the Keycloak reverse proxy guide.
     # /metrics and /health are intentionally excluded.
