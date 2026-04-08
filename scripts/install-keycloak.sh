@@ -93,6 +93,8 @@ spec:
       secret:
         name: keycloak-admin-credentials
         key: password
+    - name: proxy-headers
+      value: xforwarded
 EOF
 
 echo -e "\n${GREEN}Step 7: Exposing Keycloak on port ${LB_PORT} via LoadBalancer${NC}"
@@ -113,6 +115,10 @@ EOF
 
 echo -e "\n${GREEN}Step 8: Waiting for Keycloak to be ready${NC}"
 kubectl wait --for=condition=Ready --timeout=300s keycloak/keycloak -n "${NAMESPACE}"
+
+echo -e "\n${GREEN}Step 9: Applying Keycloak Gateway and HTTPRoute${NC}"
+kubectl -n nginx-gateway apply -f keycloak/gateway.yaml
+kubectl apply -f keycloak/httproute.yaml
 
 echo -e "\n${GREEN}Installation complete!${NC}"
 echo -e "\n${GREEN}Pods in ${NAMESPACE} namespace:${NC}"

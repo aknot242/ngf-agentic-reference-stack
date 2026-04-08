@@ -1,0 +1,40 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: keycloak
+  namespace: keycloak
+spec:
+  parentRefs:
+    - namespace: nginx-gateway
+      name: keycloak-gateway
+      sectionName: keycloak
+  rules:
+    # Expose paths recommended by the Keycloak reverse proxy guide.
+    # /metrics and /health are intentionally excluded.
+    # /admin/ is exposed for demo purposes only - not recommended for production.
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /realms/
+        - path:
+            type: PathPrefix
+            value: /resources/
+        - path:
+            type: PathPrefix
+            value: /.well-known/
+        - path:
+            type: PathPrefix
+            value: /admin/
+      filters:
+        - type: RequestHeaderModifier
+          requestHeaderModifier:
+            set:
+              # Required so Keycloak constructs correct redirect URIs when
+              # proxy-headers=xforwarded is set on the Keycloak CR.
+              - name: X-Forwarded-Proto
+                value: http
+              - name: X-Forwarded-Port
+                value: "8081"
+      backendRefs:
+        - name: keycloak-service
+          port: 8080
