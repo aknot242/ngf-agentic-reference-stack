@@ -42,7 +42,7 @@ echo -e "${GREEN}✓ k3d $(k3d version | head -1)${NC}"
 
 # Create cluster
 echo -e "\n${GREEN}Creating k3d cluster '${CLUSTER_NAME}'${NC}"
-echo -e "${YELLOW}Port mappings: 8080, 8000${NC}"
+echo -e "${YELLOW}Port mappings: 8080, 8000, 8081${NC}"
 if [ -n "${TLS_SAN}" ]; then
     echo -e "${YELLOW}TLS SAN: ${TLS_SAN}${NC}"
 fi
@@ -55,6 +55,7 @@ fi
 k3d cluster create "${CLUSTER_NAME}" \
     -p "8080:8080@loadbalancer" \
     -p "8000:8000@loadbalancer" \
+    -p "8081:8081@loadbalancer" \
     --k3s-arg "--disable=traefik@server:0" \
     "${TLS_SAN_ARG[@]}"
 
@@ -65,4 +66,5 @@ echo -e "\n${GREEN}Cluster '${CLUSTER_NAME}' created successfully!${NC}"
 echo -e "\n${YELLOW}Next steps:${NC}"
 echo "1. Use the cluster: kubectl --context k3d-${CLUSTER_NAME} get nodes"
 echo "2. Install NGINX Gateway Fabric: ./scripts/ngf-setup.sh"
-echo "3. Deploy the stack (frontend → backend → inference)"
+echo "3. Install Keycloak: ./scripts/install-keycloak.sh"
+echo "4. Deploy the stack (frontend → backend → inference)"
