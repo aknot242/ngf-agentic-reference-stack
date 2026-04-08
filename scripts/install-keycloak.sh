@@ -2,7 +2,7 @@
 
 # Keycloak Installation Script for NGF Agentic Reference Stack
 # Installs the Keycloak Operator and a Keycloak instance in development mode,
-# accessible via the load balancer on port 8081.
+# exposed via NGINX Gateway Fabric on port 8081.
 #
 # The operator enables declarative configuration of Keycloak via Kubernetes
 # resources (Keycloak, KeycloakRealmImport CRDs).
@@ -17,7 +17,6 @@ NAMESPACE="keycloak"
 OPERATOR_VERSION="26.1.0"
 ADMIN_USER="admin"
 ADMIN_PASSWORD="admin"
-LB_PORT=8081
 
 OPERATOR_BASE="https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources/${OPERATOR_VERSION}/kubernetes"
 
@@ -97,22 +96,6 @@ spec:
       value: xforwarded
 EOF
 
-echo -e "\n${GREEN}Step 7: Exposing Keycloak on port ${LB_PORT} via LoadBalancer${NC}"
-kubectl apply -f - <<EOF
-apiVersion: v1
-kind: Service
-metadata:
-  name: keycloak-loadbalancer
-  namespace: ${NAMESPACE}
-spec:
-  type: LoadBalancer
-  selector:
-    app: keycloak
-  ports:
-    - port: ${LB_PORT}
-      targetPort: 8080
-EOF
-
 echo -e "\n${GREEN}Step 8: Waiting for Keycloak to be ready${NC}"
 kubectl wait --for=condition=Ready --timeout=300s keycloak/keycloak -n "${NAMESPACE}"
 
@@ -123,8 +106,8 @@ kubectl apply -f keycloak/httproute.yaml
 echo -e "\n${GREEN}Installation complete!${NC}"
 echo -e "\n${GREEN}Pods in ${NAMESPACE} namespace:${NC}"
 kubectl get pods -n "${NAMESPACE}"
-echo -e "\n${YELLOW}Keycloak is accessible at: http://localhost:${LB_PORT}${NC}"
-echo -e "${YELLOW}Admin console:            http://localhost:${LB_PORT}/admin${NC}"
+echo -e "\n${YELLOW}Keycloak is accessible at: http://localhost:8081${NC}"
+echo -e "${YELLOW}Admin console:            http://localhost:8081/admin${NC}"
 echo -e "${YELLOW}Admin user:               ${ADMIN_USER}${NC}"
 echo -e "\n${YELLOW}Available CRDs:${NC}"
 kubectl get crd | grep keycloak
