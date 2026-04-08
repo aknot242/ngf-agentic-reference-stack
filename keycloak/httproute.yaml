@@ -5,7 +5,7 @@ metadata:
   namespace: keycloak
 spec:
   parentRefs:
-    - namespace: nginx-gateway
+    - namespace: keycloak
       name: keycloak-gateway
   rules:
     # Expose paths recommended by the Keycloak reverse proxy guide.
