@@ -57,7 +57,6 @@ NC='\033[0m'
 
 EDITION=$( [ "${NGINX_PLUS}" = true ] && echo " (NGINX Plus)" || echo "" )
 echo -e "${GREEN}Installing NGINX Gateway Fabric ${NGF_VERSION} (experimental) with Gateway API Inference Extension${EDITION}${NC}"
-echo -e "${YELLOW}WARNING: The Gateway API Inference Extension is in alpha status and should not be used in production${NC}"
 
 echo -e "\n${GREEN}Step 1: Creating namespace ${NAMESPACE}${NC}"
 kubectl create namespace ${NAMESPACE} --dry-run=client -o yaml | kubectl apply -f -
@@ -73,7 +72,7 @@ kubectl kustomize "https://github.com/nginx/nginx-gateway-fabric/config/crd/infe
 
 if [ "${NGINX_PLUS}" = true ]; then
     echo -e "\n${GREEN}Step 3c: Creating NGINX Plus secrets${NC}"
-    kubectl create -n "${NAMESPACE}" secret generic nplus-license --from-file "${JWT_FILE}"
+    kubectl create -n "${NAMESPACE}" secret generic nplus-license --from-file=license.jwt="${JWT_FILE}"
     kubectl create -n "${NAMESPACE}" secret docker-registry nginx-plus-registry-secret \
         --docker-server=private-registry.nginx.com \
         --docker-username="$(cat "${JWT_FILE}")" \
