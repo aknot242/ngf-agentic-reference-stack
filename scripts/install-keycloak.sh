@@ -106,8 +106,8 @@ kubectl apply -f keycloak/httproute.yaml
 echo -e "\n${GREEN}Installation complete!${NC}"
 echo -e "\n${GREEN}Pods in ${NAMESPACE} namespace:${NC}"
 kubectl get pods -n "${NAMESPACE}"
-echo -e "\n${YELLOW}Keycloak is accessible at: http://localhost:8081${NC}"
-echo -e "${YELLOW}Admin console:            http://localhost:8081/admin${NC}"
+echo -e "\n${YELLOW}Keycloak is accessible via NGINX Gateway Fabric at: http://localhost:8082/realms/master${NC}"
+echo -e "${YELLOW}Admin console:                                      http://localhost:8082/admin${NC}"
 echo -e "${YELLOW}Admin user:               ${ADMIN_USER}${NC}"
 echo -e "\n${YELLOW}Available CRDs:${NC}"
 kubectl get crd | grep keycloak

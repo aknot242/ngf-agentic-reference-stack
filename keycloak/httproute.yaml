@@ -33,7 +33,7 @@ spec:
               - name: X-Forwarded-Proto
                 value: http
               - name: X-Forwarded-Port
-                value: "8081"
+                value: "8082"
       backendRefs:
         - name: keycloak-service
           port: 8080
