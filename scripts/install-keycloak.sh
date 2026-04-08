@@ -83,15 +83,10 @@ spec:
     strict: false
     strictBackchannel: false
   startOptimized: false
+  bootstrapAdmin:
+    user:
+      secret: keycloak-admin-credentials
   additionalOptions:
-    - name: bootstrap-admin-username
-      secret:
-        name: keycloak-admin-credentials
-        key: username
-    - name: bootstrap-admin-password
-      secret:
-        name: keycloak-admin-credentials
-        key: password
     - name: proxy-headers
       value: xforwarded
 EOF
