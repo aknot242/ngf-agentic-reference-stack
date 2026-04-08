@@ -1,0 +1,9 @@
+apiVersion: gateway.nginx.org/v1alpha1
+kind: SnippetsFilter
+metadata:
+  name: direct-200
+  namespace: keycloak
+spec:
+  snippets:
+    - context: http.server.location
+      value: "return 200;"

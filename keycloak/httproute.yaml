@@ -8,6 +8,21 @@ spec:
     - namespace: nginx-gateway
       name: keycloak-gateway
   rules:
+    # /readyz returns 200 directly without routing to the backend.
+    # Uses a SnippetsFilter to inject `return 200;` into the NGINX location block.
+    - matches:
+        - path:
+            type: Exact
+            value: /readyz
+      filters:
+        - type: ExtensionRef
+          extensionRef:
+            group: gateway.nginx.org
+            kind: SnippetsFilter
+            name: direct-200
+      backendRefs:
+        - name: keycloak-service
+          port: 8080
     # Expose paths recommended by the Keycloak reverse proxy guide.
     # /metrics and /health are intentionally excluded.
     # /admin/ is exposed for demo purposes only - not recommended for production.
