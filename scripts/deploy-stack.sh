@@ -47,7 +47,7 @@ kubectl -n frontend apply -f frontend/service.yaml
 kubectl -n frontend apply -f frontend/httproute.yaml
 
 echo -e "${YELLOW}Waiting for frontend deployment to be ready...${NC}"
-kubectl wait --for=condition=available --timeout=120s deployment -l app=frontend -n frontend
+kubectl wait --for=condition=available --timeout=120s deployment/frontend -n frontend
 
 # ---------------------------------------------------------------------------
 # Step 3 - Backend
@@ -59,7 +59,7 @@ kubectl -n backend apply -f backend/service.yaml
 kubectl -n backend apply -f backend/httproute.yaml
 
 echo -e "${YELLOW}Waiting for backend deployment to be ready...${NC}"
-kubectl wait --for=condition=available --timeout=120s deployment -l app=backend -n backend
+kubectl wait --for=condition=available --timeout=120s deployment/backend -n backend
 
 # ---------------------------------------------------------------------------
 # Step 4 - Inference layer
@@ -70,13 +70,13 @@ kubectl -n vllm apply -f inference-simulator/deployment.yaml
 kubectl -n vllm apply -f inference-simulator/inferencepool.yaml
 
 echo -e "${YELLOW}Waiting for inference simulator pods to be ready...${NC}"
-kubectl wait --for=condition=available --timeout=180s deployment -l app=vllm-llama3-8b-instruct -n vllm
+kubectl wait --for=condition=available --timeout=180s deployment/vllm-llama3-8b-instruct -n vllm
 
 echo -e "\n${GREEN}Step 4b: Deploying Endpoint Picker Pod (EPP)${NC}"
 kubectl -n vllm apply -f inference-simulator/endpoint-picker/
 
 echo -e "${YELLOW}Waiting for EPP to be ready...${NC}"
-kubectl wait --for=condition=available --timeout=120s deployment -l app=vllm-llama3-8b-instruct-epp -n vllm
+kubectl wait --for=condition=available --timeout=120s deployment/vllm-llama3-8b-instruct-epp -n vllm
 
 echo -e "\n${GREEN}Step 4c: Attaching inference HTTPRoute${NC}"
 kubectl -n vllm apply -f inference-simulator/httproute.yaml
